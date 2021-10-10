@@ -32,7 +32,7 @@ class UriFilter implements PreFetchFilterInterface
      *
      * @return bool
      */
-    public function match(UriInterface $uri)
+    public function match(UriInterface $uri): bool
     {
         foreach ($this->regexBag as $regex) {
             if (preg_match($regex, $uri->toString())) {

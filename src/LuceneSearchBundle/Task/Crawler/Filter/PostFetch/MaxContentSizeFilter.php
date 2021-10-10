@@ -27,7 +27,7 @@ class MaxContentSizeFilter implements PostFetchFilterInterface
      *
      * @return bool
      */
-    public function match(Resource $resource)
+    public function match(Resource $resource): bool
     {
         $size = $resource->getResponse()->getBody()->getSize();
         $sizeMb = $size / 1024 / 1024;

@@ -27,7 +27,7 @@ class MimeTypeFilter implements PostFetchFilterInterface
      *
      * @return bool
      */
-    public function match(Resource $resource)
+    public function match(Resource $resource): bool
     {
         $hasContentType = count(
                 array_intersect(

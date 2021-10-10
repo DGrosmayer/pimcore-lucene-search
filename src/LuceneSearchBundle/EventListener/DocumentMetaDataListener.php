@@ -6,7 +6,7 @@ use LuceneSearchBundle\Tool\CrawlerState;
 use Pimcore\Http\Request\Resolver\DocumentResolver;
 use Pimcore\Model\Document\Page;
 use Pimcore\Twig\Extension\Templating\HeadMeta;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class DocumentMetaDataListener
 {
@@ -42,7 +42,7 @@ class DocumentMetaDataListener
     /**
      * @param GetResponseEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         if (!$this->crawlerState->isLuceneSearchCrawler()) {
             return;

@@ -56,10 +56,11 @@ class CrawlCommand extends Command
             $this->taskManager->processTaskChain(['force' => $input->getOption('force')]);
         } catch (\Exception $e) {
             $output->writeln(sprintf('<fg=red>LuceneSearch: Error while crawling: %s.</>', $e->getMessage()));
+            return 1;
         }
 
         $output->writeln('<fg=green>LuceneSearch: Finished crawl.</>');
-
+        return 0;
     }
 
 }

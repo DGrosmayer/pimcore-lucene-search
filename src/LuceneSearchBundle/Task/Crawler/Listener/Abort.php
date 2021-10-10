@@ -4,7 +4,7 @@ namespace LuceneSearchBundle\Task\Crawler\Listener;
 
 use LuceneSearchBundle\Configuration\Configuration;
 use LuceneSearchBundle\LuceneSearchEvents;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
 class Abort

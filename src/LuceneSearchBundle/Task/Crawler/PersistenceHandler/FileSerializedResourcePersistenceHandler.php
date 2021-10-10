@@ -18,7 +18,7 @@ class FileSerializedResourcePersistenceHandler extends FilePersistenceHandler im
      *
      * @return string
      */
-    protected function completePath($path)
+    protected function completePath($path): string
     {
         if (substr($path, -1, 1) === '/') {
             $path .= $this->defaultFilename;
@@ -49,7 +49,7 @@ class FileSerializedResourcePersistenceHandler extends FilePersistenceHandler im
     /**
      * @return Resource
      */
-    public function current()
+    public function current(): Resource
     {
         return unserialize($this->getIterator()->current()->getContents());
     }

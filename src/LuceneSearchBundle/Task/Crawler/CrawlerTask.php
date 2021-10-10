@@ -137,7 +137,7 @@ class CrawlerTask extends AbstractTask
         $crawlerConfig = $this->configuration->getConfig('crawler');
 
         $maxLinkDepth = $crawlerConfig['max_link_depth'];
-        $this->maxLinkDepth = !is_numeric($maxLinkDepth) ? 1 : $maxLinkDepth;
+        $this->maxLinkDepth = ! is_numeric($maxLinkDepth) ? 1 : $maxLinkDepth;
 
         $this->allowHashInUrl = $filterLinks['allow_hash_in_url'];
         $this->allowQueryInUrl = $filterLinks['allow_query_in_url'];
@@ -168,11 +168,11 @@ class CrawlerTask extends AbstractTask
         $userInvalidLinks = $filterLinks['user_invalid_links'];
         $coreInvalidLinks = $filterLinks['core_invalid_links'];
 
-        if (!empty($userInvalidLinks) && !empty($coreInvalidLinks)) {
+        if (! empty($userInvalidLinks) && ! empty($coreInvalidLinks)) {
             $invalidLinkRegex = array_merge($userInvalidLinks, [$coreInvalidLinks]);
-        } elseif (!empty($userInvalidLinks)) {
+        } elseif (! empty($userInvalidLinks)) {
             $invalidLinkRegex = $userInvalidLinks;
-        } elseif (!empty($coreInvalidLinks)) {
+        } elseif (! empty($coreInvalidLinks)) {
             $invalidLinkRegex = [$coreInvalidLinks];
         } else {
             $invalidLinkRegex = [];
@@ -216,7 +216,7 @@ class CrawlerTask extends AbstractTask
         $queueManager->setTraversalAlgorithm(QueueManager\InMemoryQueueManager::ALGORITHM_DEPTH_FIRST);
         $spider->setQueueManager($queueManager);
 
-        $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer("//link[@hreflang]|//a[not(@rel='nofollow')]"));
+        $spider->getDiscovererSet()->set(new XPathExpressionDiscoverer("//link[@hreflang]|//a"));
 
         $spider->getDiscovererSet()->addFilter(new Filter\Prefetch\AllowedSchemeFilter($this->allowedSchemes));
 
@@ -307,16 +307,16 @@ class CrawlerTask extends AbstractTask
     {
         $defaultHeaderElements = [
             [
-                'name'       => 'Lucene-Search',
-                'value'      => $this->configuration->getSystemConfig('version'),
+                'name' => 'Lucene-Search',
+                'value' => $this->configuration->getSystemConfig('version'),
                 'identifier' => 'lucene-search-bundle'
             ]
         ];
 
         $event = new CrawlerRequestHeaderEvent();
         $this->eventDispatcher->dispatch(
-            LuceneSearchEvents::LUCENE_SEARCH_CRAWLER_REQUEST_HEADER,
-            $event
+            $event,
+            LuceneSearchEvents::LUCENE_SEARCH_CRAWLER_REQUEST_HEADER
         );
 
         $headerElements = array_merge($defaultHeaderElements, $event->getHeaders());
