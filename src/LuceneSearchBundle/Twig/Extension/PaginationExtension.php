@@ -2,7 +2,14 @@
 
 namespace LuceneSearchBundle\Twig\Extension;
 
-class PaginationExtension extends \Twig_Extension
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
+
+class PaginationExtension extends AbstractExtension
 {
     /**
      * {@inheritdoc}
@@ -10,12 +17,12 @@ class PaginationExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_Function('lucene_search_pagination', [$this, 'getPagination'], [
+            new TwigFunction('lucene_search_pagination', [$this, 'getPagination'], [
                 'needs_environment' => true,
                 'needs_context'     => true,
                 'is_safe'           => ['html']
             ]),
-            new \Twig_Function('lucene_search_pagination_url', [$this, 'getPaginationUrl'], [
+            new TwigFunction('lucene_search_pagination_url', [$this, 'getPaginationUrl'], [
                 'needs_context' => true,
                 'is_safe'       => ['html']
             ]),
@@ -23,16 +30,16 @@ class PaginationExtension extends \Twig_Extension
     }
 
     /**
-     * @param \Twig_Environment $environment
+     * @param Environment $environment
      * @param array             $context
      * @param null              $options
      *
      * @return string
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function getPagination(\Twig_Environment $environment, $context = [], $options = null)
+    public function getPagination(Environment $environment, $context = [], $options = null)
     {
         $defaults = [
             'paginationUrl'      => '',
