@@ -196,7 +196,9 @@ class ParserTask extends AbstractTask
         $hasCanonicalLink = $crawler->filterXpath('//link[@rel="canonical"]')->count() > 0;
 
         if ($hasCanonicalLink === true) {
-            if ($uri != $crawler->filterXpath('//link[@rel="canonical"]')->attr('href')) {
+            $parsed_url = parse_url($uri);
+            $url_path = $parsed_url['path'];
+            if ($uri != $crawler->filterXpath('//link[@rel="canonical"]')->attr('href') and $url_path != $crawler->filterXpath('//link[@rel="canonical"]')->attr('href')) {
                 $this->log(sprintf(
                         'skip indexing [ %s ] because it has canonical link %s',
                         $uri,
