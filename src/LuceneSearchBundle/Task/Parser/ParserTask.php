@@ -765,8 +765,8 @@ class ParserTask extends AbstractTask
         //remove scripts and stuff
         $search = [
             '@(<script[^>]*?>.*?</script>)@si', // Strip out javascript
-            '@<style[^>]*?>.*?</style>@siU', // Strip style tags properly
-            '@<![\s\S]*?--[ \t\n\r]*>@' // Strip multi-line comments including CDATA
+            '@<style.*</style>@sUi', // Strip style tags properly
+            '@<!-- .*-->@sU' // Strip multi-line comments including CDATA
         ];
 
         $text = preg_replace($search, '', $html);
