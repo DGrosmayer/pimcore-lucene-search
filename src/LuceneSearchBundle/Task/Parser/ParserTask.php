@@ -196,7 +196,9 @@ class ParserTask extends AbstractTask
         $hasCanonicalLink = $crawler->filterXpath('//link[@rel="canonical"]')->count() > 0;
 
         if ($hasCanonicalLink === true) {
-            if ($uri != $crawler->filterXpath('//link[@rel="canonical"]')->attr('href')) {
+            $parsed_url = parse_url($uri);
+            $url_path = $parsed_url['path'];
+            if ($uri != $crawler->filterXpath('//link[@rel="canonical"]')->attr('href') and $url_path != $crawler->filterXpath('//link[@rel="canonical"]')->attr('href')) {
                 $this->log(sprintf(
                         'skip indexing [ %s ] because it has canonical link %s',
                         $uri,
@@ -441,8 +443,8 @@ class ParserTask extends AbstractTask
 
                 $parserEvent = new PdfParserEvent($doc, $fileContent, $assetMeta, $params);
                 $this->eventDispatcher->dispatch(
-                    LuceneSearchEvents::LUCENE_SEARCH_PARSER_PDF_DOCUMENT,
-                    $parserEvent
+                    $parserEvent,
+                    LuceneSearchEvents::LUCENE_SEARCH_PARSER_PDF_DOCUMENT
                 );
 
                 $doc = $parserEvent->getDocument();
@@ -621,8 +623,8 @@ class ParserTask extends AbstractTask
 
             $event = new AssetResourceRestrictionEvent($resource);
             $this->eventDispatcher->dispatch(
-                LuceneSearchEvents::LUCENE_SEARCH_PARSER_ASSET_RESTRICTION,
-                $event
+                $event,
+                LuceneSearchEvents::LUCENE_SEARCH_PARSER_ASSET_RESTRICTION
             );
 
             if ($event->getAsset() instanceof Asset) {
@@ -763,8 +765,8 @@ class ParserTask extends AbstractTask
         //remove scripts and stuff
         $search = [
             '@(<script[^>]*?>.*?</script>)@si', // Strip out javascript
-            '@<style[^>]*?>.*?</style>@siU', // Strip style tags properly
-            '@<![\s\S]*?--[ \t\n\r]*>@' // Strip multi-line comments including CDATA
+            '@<style.*</style>@sUi', // Strip style tags properly
+            '@<!-- .*-->@sU' // Strip multi-line comments including CDATA
         ];
 
         $text = preg_replace($search, '', $html);
