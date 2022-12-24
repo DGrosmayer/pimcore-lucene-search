@@ -89,7 +89,9 @@ class Configuration
      */
     public function getConfig($slot)
     {
-        return $this->config[$slot];
+        if (is_array($this->config) && array_key_exists($slot, $this->config)) {
+            return $this->config[$slot];
+        }
     }
 
     /**
@@ -107,7 +109,9 @@ class Configuration
      */
     public function getSystemConfig($slot = null)
     {
-        return $this->systemConfig[$slot];
+        if (is_array($this->systemConfig) && array_key_exists($slot, $this->systemConfig)) {
+            return $this->systemConfig[$slot];
+        }
     }
 
     /**
