@@ -275,45 +275,40 @@ class ParserTask extends AbstractTask
             $objectId = (int)$crawler->filterXpath('//meta[@name="lucene-search:objectId"]')->attr('content');
         }
 
-        $documentHasDelimiter = false;
-        $documentHasExcludeDelimiter = false;
-
         //now limit to search content area if indicators are set and found in this document
+        $documentHasIncludeDelimiter = false;
         if (!empty($this->searchStartIndicator)) {
-            $documentHasDelimiter = strpos($html, $this->searchStartIndicator) !== false;
+            $documentHasIncludeDelimiter = strpos($html, $this->searchStartIndicator) !== false;
         }
 
-        //remove content between exclude indicators
-        if (!empty($this->searchExcludeStartIndicator)) {
-            $documentHasExcludeDelimiter = strpos($html, $this->searchExcludeStartIndicator) !== false;
-        }
-
-        if ($documentHasDelimiter
+        if ($documentHasIncludeDelimiter
             && !empty($this->searchStartIndicator)
             && !empty($this->searchEndIndicator)) {
             preg_match_all(
-                '%' . $this->searchStartIndicator . '(.*?)' . $this->searchEndIndicator . '%si',
+                '%' . preg_quote($this->searchStartIndicator) . '(.*?)' . preg_quote($this->searchEndIndicator) . '%si',
                 $html,
                 $htmlSnippets
             );
 
-            $html = '';
+            $contentStartPosition = strpos($html, $this->searchStartIndicator) + strlen($this->searchStartIndicator);
+            $contentEndPosition = strpos($html, $this->searchEndIndicator);
+            $html = substr($html, $contentStartPosition, $contentEndPosition - $contentStartPosition);
+        }
 
-            if (is_array($htmlSnippets[1])) {
-                foreach ($htmlSnippets[1] as $snippet) {
-                    if ($documentHasExcludeDelimiter
-                        && !empty($this->searchExcludeStartIndicator)
-                        && !empty($this->searchExcludeEndIndicator)) {
-                        $snippet = preg_replace(
-                            '#(' . preg_quote($this->searchExcludeStartIndicator) . ')(.*?)(' . preg_quote($this->searchExcludeEndIndicator) . ')#si',
-                            ' ',
-                            $snippet
-                        );
-                    }
-
-                    $html .= ' ' . $snippet;
-                }
-            }
+        //remove content between exclude indicators
+        $documentHasExcludeDelimiter = false;
+        if (!empty($this->searchExcludeStartIndicator)) {
+            $documentHasExcludeDelimiter = strpos($html, $this->searchExcludeStartIndicator) !== false;
+        }
+        
+        if ($documentHasExcludeDelimiter
+            && !empty($this->searchExcludeStartIndicator)
+            && !empty($this->searchExcludeEndIndicator)) {
+            $html = preg_replace(
+                '#(' . preg_quote($this->searchExcludeStartIndicator) . ')(.*?)(' . preg_quote($this->searchExcludeEndIndicator) . ')#si',
+                ' ',
+                $html
+            );
         }
 
         $params = [
@@ -332,9 +327,13 @@ class ParserTask extends AbstractTask
             'object_id'    => $objectId
         ];
 
-        $this->addHtmlToIndex($html, $originalHtml, $params);
-
-        $this->log(sprintf('added html to indexer stack: %s', $uri));
+        // Avoid crashes if an empty page is indexed
+        if(strlen($html) > 0) {
+            $this->addHtmlToIndex($html, $originalHtml, $params);
+            $this->log(sprintf('added html to indexer stack: %s', $uri));
+        } else {
+            $this->log(sprintf('skipping indexing of empty page: %s', $uri));
+        }
 
         return true;
     }
