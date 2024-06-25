@@ -1,6 +1,8 @@
 # Pimcore Lucene Search
 ![lucenesearch crawler](https://cloud.githubusercontent.com/assets/700119/25579028/7da66f40-2e74-11e7-8da5-988d61feb2e2.jpg)
 
+--- test change ---
+
 ## Note
 The Pimcore Lucene Search Bundle will be marked as abandoned as soon the [Dynamic Search Bundle](https://github.com/dachcom-digital/pimcore-dynamic-search) reached a stable state.
 After that, bugfixing will be supported in some cases. However, PRs are always welcome.
