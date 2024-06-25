@@ -46,7 +46,7 @@ class CrawlCommand extends Command
      *
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $consoleLogger = new ConsoleLogger();
         $consoleLogger->setConsoleOutput($output);
