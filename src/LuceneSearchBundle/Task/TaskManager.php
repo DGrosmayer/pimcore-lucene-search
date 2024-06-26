@@ -65,7 +65,7 @@ class TaskManager
      *
      * @throws \Exception
      */
-    public function processTaskChain($options = [])
+    public function processTaskChain($options = []): void
     {
         $processData = [];
 
